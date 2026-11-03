@@ -1,19 +1,18 @@
 const { defineConfig } = require('@playwright/test');
-const capabilities = require('./config/capabilities');
 
 module.exports = defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  reporter: [['html', { open: 'never' }]],
+  reporter: [
+    ['allure-playwright'],
+    ['html', { open: 'never' }],
+  ],
   outputDir: './test-results',
   use: {
-    baseURL: "https://ecommerce-playground.lambdatest.io",
+    baseURL: 'https://www.userfeel.com/tester-faq',
     trace: 'on-first-retry',
   },
-  projects: capabilities.map(capability => ({
-    name: capability['LT:Options']['name'],
-    metadata: { capability },
-  })),
+  projects: [{ name: 'chromium', use: { browserName: 'chromium' } }],
   workers: 3,
   retries: process.env.CI ? 1 : 0,
 });

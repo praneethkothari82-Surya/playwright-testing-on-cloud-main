@@ -13,29 +13,29 @@ pipeline {
       }
     }
 
+    stage('Install browser') {
+      steps {
+        sh 'npx playwright install --with-deps chromium'
+      }
+    }
+
     stage('Run Playwright tests') {
       steps {
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'lambdatest',
-            usernameVariable: 'LT_USERNAME',
-            passwordVariable: 'LT_ACCESS_KEY'
-          ),
-          usernamePassword(
-            credentialsId: 'ecommerce-test-user',
-            usernameVariable: 'E2E_USERNAME',
-            passwordVariable: 'E2E_PASSWORD'
-          )
-        ]) {
-          sh 'npm test'
-        }
+        sh 'npm test'
       }
     }
   }
 
   post {
     always {
-      archiveArtifacts artifacts: 'playwright-report/**, test-results/**', allowEmptyArchive: true
+      script {
+        if (fileExists('allure-results')) {
+          allure includeProperties: false, results: [[path: 'allure-results']]
+        } else {
+          echo 'Allure results were not generated.'
+        }
+      }
+      archiveArtifacts artifacts: 'allure-results/**, playwright-report/**, test-results/**', allowEmptyArchive: true
     }
   }
 }
