@@ -16,7 +16,10 @@ pipeline {
 
     stage('Install browser') {
       steps {
+        // Installs the chromium binary
         sh 'npx playwright install chromium'
+        // Installs the required OS-level system libraries (like libatk)
+        sh 'npx playwright install-deps'
       }
     }
 
