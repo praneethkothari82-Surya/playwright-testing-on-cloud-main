@@ -10,6 +10,7 @@ pipeline {
     stage('Install dependencies') {
       steps {
         sh 'node --version && npm --version && npm ci'
+        sh 'npm i allure-commandline'
       }
     }
 
