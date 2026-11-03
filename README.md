@@ -36,20 +36,24 @@ git clone https://github.com/Mukesh-50/playwright-testing-on-cloud.git
 
 ## Execute the test
 
-Get your username and access key from lambdatest and replace in "login.spec.js" file
+Set the LambdaTest credentials and ecommerce test account credentials in the
+environment. Never put these values in source code.
 
-You can get username and access key from capability generator or from account seetings.
+Windows (Command Prompt):
+```
+set "LT_USERNAME=YOUR_LAMBDATEST_USERNAME"
+set "LT_ACCESS_KEY=YOUR_LAMBDATEST_ACCESS_KEY"
+set "E2E_USERNAME=YOUR_TEST_ACCOUNT_EMAIL"
+set "E2E_PASSWORD=YOUR_TEST_ACCOUNT_PASSWORD"
+```
 
-Set LT_USERNAME and LT_ACCESS_KEY in environment variable </br></br>
-Windows</br>
-set LT_USERNAME="YOUR_LAMBDATEST_USERNAME"</br>
-set LT_ACCESS_KEY="YOUR_LAMBDATEST_ACCESS_KEY" 
-
-</br>
-
-MAC and Linux </br>
-export LT_USERNAME="YOUR_LAMBDATEST_USERNAME" </br>
-export LT_ACCESS_KEY="YOUR_LAMBDATEST_ACCESS_KEY" </br>
+macOS and Linux:
+```
+export LT_USERNAME="YOUR_LAMBDATEST_USERNAME"
+export LT_ACCESS_KEY="YOUR_LAMBDATEST_ACCESS_KEY"
+export E2E_USERNAME="YOUR_TEST_ACCOUNT_EMAIL"
+export E2E_PASSWORD="YOUR_TEST_ACCOUNT_PASSWORD"
+```
 
 
 ![Capability Generator](https://github.com/Mukesh-50/automation-testing-on-cloud-demo/assets/7221229/781aabaa-67eb-4b12-b0f8-f16bc9748d73)
@@ -63,8 +67,29 @@ export LT_ACCESS_KEY="YOUR_LAMBDATEST_ACCESS_KEY" </br>
 ## Execute below command
 
 ```
-  cd PlaywrightLT
-
+  npm ci
   npx playwright test
 ```
 
+## Run from Jenkins on AWS EC2
+
+Use a Linux Jenkins agent on EC2 with Git, Node.js 18 or newer, and npm available
+on the agent's `PATH`. Add the repository to a Jenkins Pipeline job so it loads
+the checked-in `Jenkinsfile`. The pipeline installs the locked dependencies,
+runs the tests, and archives the Playwright HTML report and test results.
+
+Create these Jenkins credentials as **Username with password** credentials:
+
+| Jenkins credential ID | Username | Password |
+| --- | --- | --- |
+| `lambdatest` | LambdaTest username | LambdaTest access key |
+| `ecommerce-test-user` | Test account email | Test account password |
+
+The test account must be valid on the configured ecommerce site. The LambdaTest
+credentials are injected only during the test stage; do not put credentials in
+the repository or in the Jenkinsfile. The EC2 agent needs outbound HTTPS access
+to the npm registry, LambdaTest, and the ecommerce site.
+
+Run `npm test` locally after setting `LT_USERNAME`, `LT_ACCESS_KEY`,
+`E2E_USERNAME`, and `E2E_PASSWORD` in the environment. The configured browser
+projects execute against LambdaTest; local browser binaries are not required.
