@@ -26,9 +26,18 @@ For a Freestyle job, use an **Execute shell** build step:
 
 ```sh
 npm ci
-npx playwright install --with-deps chromium
+npx playwright install chromium
 npm test
 ```
+
+Do not add `--with-deps` to a Jenkins build step: it uses the OS package
+manager and requires root/sudo access, which a non-interactive Jenkins job
+usually does not have. If Chromium fails to launch because shared system
+libraries are missing, have an administrator install Playwright's Linux
+browser dependencies on the EC2 agent once, or use a Jenkins agent image that
+already includes those dependencies. Then rerun `npx playwright install
+chromium` as the Jenkins user so the browser is available in that user's
+Playwright cache.
 
 Install the Jenkins Allure plugin and configure an **Allure Report** post-build
 action with `allure-results` as the results path. No Jenkins credentials or

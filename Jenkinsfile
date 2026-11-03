@@ -15,7 +15,7 @@ pipeline {
 
     stage('Install browser') {
       steps {
-        sh 'npx playwright install --with-deps chromium'
+        sh 'npx playwright install chromium'
       }
     }
 
