@@ -14,14 +14,17 @@ pipeline {
       }
     }
 
-    stage('Install browser') {
+        stage('Install browser') {
       steps {
-        // Installs the chromium binary
         sh 'npx playwright install chromium'
-        // Installs the required OS-level system libraries (like libatk)
-        sh 'npx playwright install-deps'
+        
+        // This binds your secret password to an environment variable and pipes it securely to sudo
+        withCredentials([string(credentialsId: 'jenkins-sudo-password', variable: 'SUDO_PASS')]) {
+          sh 'echo "$SUDO_PASS" | sudo -S npx playwright install-deps'
+        }
       }
     }
+
 
     stage('Run Playwright tests') {
       steps {
